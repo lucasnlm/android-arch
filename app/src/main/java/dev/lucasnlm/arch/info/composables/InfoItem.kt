@@ -10,13 +10,13 @@ import androidx.ui.text.style.TextAlign
 @Composable
 fun InfoItem(name: String, value: String) {
     Row(
-            modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
     ) {
         Text(text = name)
         Text(
-                text = value,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.End
+            text = value,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.End
         )
     }
 }

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -27,8 +28,8 @@ abstract class IntentViewModel<Event, State> : ViewModel() {
         }
     }
 
-    suspend fun sendEvent(event: Event) {
-        eventBroadcast.send(event)
+    fun sendEvent(event: Event) {
+        eventBroadcast.offer(event)
     }
 
     override fun onCleared() {

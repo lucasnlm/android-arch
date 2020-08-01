@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">Arch</string>
+    <string name="title">Device Info</string>
+    <string name="processor">Processor</string>
+    <string name="vendor">Vendor</string>
+    <string name="model">Model</string>
+    <string name="details">Details</string>
+    <string name="abi">ABI</string>
+    <string name="cores">Cores</string>
+    <string name="revision">Revision</string>
+    <string name="governor">Governor</string>
+    <string name="clock">Clock</string>
+    <string name="min">Min</string>
+    <string name="max">Max</string>
+    <string name="core_n">Core %d</string>
+    <string name="graphics">Graphics</string>
+    <string name="renderer">Renderer</string>
+    <string name="version">Version</string>
+    <string name="instructions">Instructions</string>
 </resources>

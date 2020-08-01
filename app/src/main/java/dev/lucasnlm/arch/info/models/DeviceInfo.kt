@@ -1,6 +1,6 @@
 package dev.lucasnlm.arch.info.models
 
-data class ProcessorInfo(
+data class DeviceInfo(
     val model: String,
     val modelName: String,
     val vendor: String,

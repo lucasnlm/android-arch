@@ -12,21 +12,22 @@ import androidx.ui.material.Card
 import androidx.ui.text.TextStyle
 import androidx.ui.text.font.FontWeight
 import androidx.ui.unit.dp
+import java.util.*
 
 @Composable
 fun CardInfoColumn(name: String, children: @Composable ColumnScope.() -> Unit) {
     Card(
-            shape = RoundedCornerShape(5.dp),
-            modifier = Modifier.padding(top = 8.dp, start = 8.dp, end = 8.dp).fillMaxWidth(),
-            elevation = 2.dp
+        shape = RoundedCornerShape(5.dp),
+        modifier = Modifier.padding(8.dp).fillMaxWidth(),
+        elevation = 2.dp
     ) {
         Column(
-                modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                    text = name.toUpperCase(),
-                    modifier = Modifier.padding(vertical = 4.dp),
-                    style = TextStyle(fontWeight = FontWeight.Bold)
+                text = name.toUpperCase(Locale.getDefault()),
+                modifier = Modifier.padding(vertical = 4.dp),
+                style = TextStyle(fontWeight = FontWeight.Bold)
             )
             children()
         }

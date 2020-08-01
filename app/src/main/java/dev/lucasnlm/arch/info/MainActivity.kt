@@ -16,96 +16,153 @@ import dev.lucasnlm.arch.info.composables.AppTopBar
 import dev.lucasnlm.arch.info.composables.CardInfoColumn
 import dev.lucasnlm.arch.info.composables.InfoItem
 import dev.lucasnlm.arch.info.composables.InstructionItem
-import dev.lucasnlm.arch.info.models.ProcessorInfo
+import dev.lucasnlm.arch.info.models.ClockInfo
+import dev.lucasnlm.arch.info.models.DeviceInfo
+import dev.lucasnlm.arch.info.models.Localization
 import dev.lucasnlm.arch.info.viewmodel.InfoEvent
 import dev.lucasnlm.arch.info.viewmodel.InfoViewModel
 import dev.lucasnlm.arch.ui.ArchTheme
-import kotlinx.coroutines.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.onEach
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @FlowPreview
 @ExperimentalCoroutinesApi
 class MainActivity : AppCompatActivity() {
-    private val viewModel by viewModels<InfoViewModel>()
+    private val infoViewModel: InfoViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         lifecycleScope.launchWhenCreated {
-            viewModel.sendEvent(InfoEvent.RefreshEvent)
+            infoViewModel.sendEvent(InfoEvent.RefreshEvent)
 
-            viewModel
-                .observeState()
-                .collect {
-                    updateState(it)
-                }
-
-
+            infoViewModel.observeState().collect {
+                updateState(it.localization, it.deviceInfo)
+            }
         }
     }
 
-    private fun updateState(processorInfo: ProcessorInfo) {
+    private fun updateState(
+        localization: Localization,
+        deviceInfo: DeviceInfo
+    ) {
         setContent {
             ArchTheme {
-                DeviceInfoScreen(processorInfo)
+                DeviceInfoScreen(
+                    localization = localization,
+                    deviceInfo = deviceInfo
+                )
             }
         }
     }
 }
 
 @Composable
-fun DeviceInfoScreen(processorInfo: ProcessorInfo) = with(processorInfo) {
+fun DeviceInfoScreen(
+        localization: Localization,
+        deviceInfo: DeviceInfo
+) = with(deviceInfo) {
     Scaffold(
-            topAppBar = {
-                AppTopBar()
-            },
-            bodyContent = {
-                VerticalScroller {
-                    Column {
-                        CardInfoColumn("Processor") {
-                            InfoItem("Vendor", vendor)
-                            InfoItem("Model", model)
+        topAppBar = {
+            AppTopBar(localization.title)
+        },
+        bodyContent = {
+            VerticalScroller {
+                Column {
+                    CardInfoColumn(localization.processor) {
+                        InfoItem(localization.vendor, vendor)
+                        InfoItem(localization.model, model)
+                    }
+                    CardInfoColumn(localization.details) {
+                        InfoItem(localization.abi, abi)
+                        InfoItem(localization.model, modelName)
+                        InfoItem(localization.cores, cpuCores.toString())
+                        InfoItem(localization.revision, revision)
+                        InfoItem(localization.governor, governor)
+                    }
+                    CardInfoColumn(localization.clock) {
+                        clockInfo.minClock?.let {
+                            InfoItem(localization.min, it.toString())
                         }
-                        CardInfoColumn("Details") {
-                            InfoItem("ABI", abi)
-                            InfoItem("Model", modelName)
-                            InfoItem("Cores", cpuCores.toString())
-                            InfoItem("Revision", revision)
-                            InfoItem("Governor", governor)
+                        clockInfo.maxClock?.let {
+                            InfoItem(localization.max, it.toString())
                         }
-                        CardInfoColumn("Clock") {
-                            InfoItem("Min", clockInfo.minClock.toString())
-                            InfoItem("Max", clockInfo.maxClock.toString())
-                            clockInfo.clocks.forEachIndexed { index, clock ->
-                                InfoItem("Core $index", clock.toString())
-                            }
+                        clockInfo.clocks.forEachIndexed { index, clock ->
+                            InfoItem(
+                                String.format(localization.coreN, index + 1),
+                                clock.toString()
+                            )
                         }
-                        CardInfoColumn("Graphics") {
-                            InfoItem("Vendor", "Vend")
-                            InfoItem("Renderer", "Vend")
-                            InfoItem("Version", "Vend")
-                        }
-                        CardInfoColumn("Instructions") {
-                            FlowRow(
-                                    mainAxisSpacing = 2.dp,
-                                    crossAxisSpacing = 2.dp
-                            ) {
-                                flags.forEach {
-                                    InstructionItem(it)
-                                }
+                    }
+                    CardInfoColumn(localization.graphics) {
+                        InfoItem(localization.vendor, "Vend")
+                        InfoItem(localization.renderer, "Vend")
+                        InfoItem(localization.version, "Vend")
+                    }
+                    CardInfoColumn(localization.instructions) {
+                        FlowRow(
+                                mainAxisSpacing = 2.dp,
+                                crossAxisSpacing = 2.dp
+                        ) {
+                            flags.forEach {
+                                InstructionItem(it)
                             }
                         }
                     }
                 }
-            })
+            }
+        })
 }
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     ArchTheme {
-        //DeviceInfoScreen()
+        val localization = Localization(
+            title = "Device Info",
+            processor = "Processor",
+            vendor = "Vendor",
+            model = "Model",
+            details = "Details",
+            abi = "ABI",
+            cores = "Cores",
+            revision = "Revision",
+            governor = "Governor",
+            clock = "Clock",
+            min = "Min",
+            max = "Max",
+            coreN = "Core %d",
+            graphics = "Graphics",
+            renderer = "Renderer",
+            version = "Version",
+            instructions = "Instructions"
+        )
+
+        DeviceInfoScreen(
+            localization = localization,
+            deviceInfo = DeviceInfo(
+                model = "model",
+                modelName = "modelName",
+                vendor = "vendor",
+                revision = "revision",
+                architecture = "architecture",
+                cpuCores = 8,
+                clockInfo = ClockInfo(
+                    clocks = listOf(100, 200, 300, 400, 500, 600, 700, 800),
+                    maxClock = 800,
+                    minClock = 100
+                ),
+                stepping = "stepping",
+                bogoMips = "bogoMips",
+                bigLittle = 1,
+                abi = "abi",
+                serial = "serial",
+                device = "device",
+                governor = "governor",
+                flags = listOf("A", "BC", "DEF")
+            )
+        )
     }
 }
