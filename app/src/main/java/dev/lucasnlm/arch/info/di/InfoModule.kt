@@ -1,17 +1,23 @@
 package dev.lucasnlm.arch.info.di
 
 import dev.lucasnlm.arch.R
+import dev.lucasnlm.arch.core.domain.UseCase
+import dev.lucasnlm.arch.info.domain.LoadDeviceInfoUseCase
+import dev.lucasnlm.arch.info.domain.ShareDeviceInfoUseCase
+import dev.lucasnlm.arch.info.logic.DeviceInfoSharer
 import dev.lucasnlm.arch.info.models.Localization
 import dev.lucasnlm.arch.info.viewmodel.InfoViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 @FlowPreview
 @ExperimentalCoroutinesApi
-val LocalizationModule = module {
+val DeviceInfoModule = module {
     single {
         val context = androidContext()
         Localization(
@@ -34,7 +40,13 @@ val LocalizationModule = module {
             instructions = context.getString(R.string.instructions)
         )
     }
-    viewModel {
-        InfoViewModel(get(), get())
-    }
+
+    single { DeviceInfoSharer(androidApplication()) }
+
+    // View Model
+    viewModel { InfoViewModel(getAll()) }
+
+    // Use Cases
+    single { LoadDeviceInfoUseCase(get(), get()) } bind UseCase::class
+    single { ShareDeviceInfoUseCase(get()) } bind UseCase::class
 }

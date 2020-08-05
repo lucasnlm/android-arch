@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlin.math.roundToInt
 
-class SocRepository(
+class DeviceInfoRepository(
     private val dataReader: FileDataReader,
     private val processorInfoReader: ProcessorInfoReader
 ) {
@@ -36,11 +36,6 @@ class SocRepository(
 
         emit(result)
     }
-//
-//    fun listenClockInfo(): Observable<CpuClockInfo> = Observable.interval(1, TimeUnit.SECONDS, scheduler).map {
-//        val propCpuInfo = readProcessorInfo()
-//        readClockInfo(propCpuInfo)
-//    }
 
     private fun readClockInfo(propCpuInfo: List<ProcessorInfo>): ClockInfo {
         val coresCount: Int = processorInfoReader.getCpuCoresNumber()
@@ -94,7 +89,7 @@ class SocRepository(
             }.map {
                 ProcessorInfo(
                     HashMap<String, String>().apply {
-                    putAll(it.value)
+                        putAll(it.value)
                     }
                 )
             }
@@ -116,7 +111,7 @@ class SocRepository(
     }.firstOrNull()
 
     private fun removeTabsAndNewLines(target: String): String =
-        target.replace("\t", "").replace("\n","")
+        target.replace("\t", "").replace("\n", "")
 
     companion object {
         const val CPU_INFO_COMMAND = "/proc/cpuinfo"

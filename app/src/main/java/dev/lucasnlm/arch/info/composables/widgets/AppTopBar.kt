@@ -1,4 +1,4 @@
-package dev.lucasnlm.arch.info.composables
+package dev.lucasnlm.arch.info.composables.widgets
 
 import androidx.compose.Composable
 import androidx.ui.foundation.Icon
@@ -9,18 +9,18 @@ import androidx.ui.material.icons.Icons
 import androidx.ui.material.icons.filled.Share
 
 @Composable
-fun AppTopBar(title: String) {
+fun AppTopBar(
+    title: String,
+    onShare: () -> Unit
+) {
     TopAppBar(
         title = {
             Text(text = title)
         },
         actions = {
-            IconButton(onClick = { }) {
+            IconButton(onClick = onShare) {
                 Icon(Icons.Filled.Share)
             }
         }
     )
 }
-
-
-

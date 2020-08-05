@@ -1,4 +1,4 @@
-package dev.lucasnlm.arch.info.composables
+package dev.lucasnlm.arch.info.composables.widgets
 
 import androidx.compose.Composable
 import androidx.ui.core.Modifier
