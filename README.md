@@ -17,7 +17,7 @@ This app is build using the following libraries:
 
 ## Contributing
 
-Feel free to contribute with [issues](https://github.com/lucasnlm/antimine-android/issues), [feature requests](https://github.com/lucasnlm/antimine-android/issues), and [pull requests](https://github.com/lucasnlm/antimine-android/pulls).
+Feel free to contribute with [issues](https://github.com/lucasnlm/android-arch/issues), [feature requests](https://github.com/lucasnlm/android-arch/issues), and [pull requests](https://github.com/lucasnlm/android-arch/pulls).
 
 ## License
 
